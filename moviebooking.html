@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Movie Booking Website</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background: #111;
+    color: #fff;
+}
+
+header {
+    background: #e50914;
+    padding: 15px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.container {
+    width: 90%;
+    margin: 20px auto;
+}
+
+.movie-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.movie-card {
+    background: #222;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    transition: 0.3s;
+}
+
+.movie-card:hover {
+    transform: scale(1.05);
+    background: #333;
+}
+
+.movie-card img {
+    width: 100%;
+    border-radius: 8px;
+}
+
+button {
+    background: #e50914;
+    border: none;
+    padding: 10px;
+    margin-top: 10px;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+button:hover {
+    background: #ff1e1e;
+}
+
+.booking-section {
+    margin-top: 40px;
+    display: none;
+    background: #222;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.seats {
+    display: grid;
+    grid-template-columns: repeat(8, 35px);
+    gap: 8px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.seat {
+    width: 35px;
+    height: 35px;
+    background: #444;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.seat.selected {
+    background: #e50914;
+}
+
+.seat.booked {
+    background: gray;
+    cursor: not-allowed;
+}
+
+.summary {
+    margin-top: 20px;
+    text-align: center;
+}
+</style>
+</head>
+
+<body>
+
+<header>🎬 Movie Booking Website</header>
+
+<div class="container">
+
+    <h2>Now Showing</h2>
+
+    <div class="movie-list">
+
+        <div class="movie-card">
+            <img src="https://via.placeholder.com/200x300" alt="Movie">
+            <h3>Avengers</h3>
+            <p>Action / Adventure</p>
+            <button onclick="selectMovie('Avengers')">Book Now</button>
+        </div>
+
+        <div class="movie-card">
+            <img src="https://via.placeholder.com/200x300" alt="Movie">
+            <h3>Inception</h3>
+            <p>Sci-Fi / Thriller</p>
+            <button onclick="selectMovie('Inception')">Book Now</button>
+        </div>
+
+        <div class="movie-card">
+            <img src="https://via.placeholder.com/200x300" alt="Movie">
+            <h3>Joker</h3>
+            <p>Drama / Crime</p>
+            <button onclick="selectMovie('Joker')">Book Now</button>
+        </div>
+
+    </div>
+
+    <div class="booking-section" id="bookingSection">
+        <h2 id="selectedMovie"></h2>
+
+        <label>Select Show Time:</label>
+        <select id="showTime">
+            <option>10:00 AM</option>
+            <option>1:00 PM</option>
+            <option>4:00 PM</option>
+            <option>8:00 PM</option>
+        </select>
+
+        <div class="seats" id="seatContainer"></div>
+
+        <div class="summary">
+            <p>Selected Seats: <span id="seatCount">0</span></p>
+            <p>Total Price: ₹<span id="totalPrice">0</span></p>
+            <button onclick="confirmBooking()">Confirm Booking</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+const seatContainer = document.getElementById('seatContainer');
+const seatCount = document.getElementById('seatCount');
+const totalPrice = document.getElementById('totalPrice');
+const bookingSection = document.getElementById('bookingSection');
+const selectedMovie = document.getElementById('selectedMovie');
+
+let ticketPrice = 250; // Price per ticket in Rupees
+let selectedSeats = 0;
+
+function selectMovie(movieName) {
+    bookingSection.style.display = "block";
+    selectedMovie.innerText = "Booking for: " + movieName;
+    generateSeats();
+}
+
+function generateSeats() {
+    seatContainer.innerHTML = "";
+    selectedSeats = 0;
+    updateSummary();
+
+    for (let i = 0; i < 40; i++) {
+        const seat = document.createElement('div');
+        seat.classList.add('seat');
+
+        if (Math.random() < 0.2) {
+            seat.classList.add('booked');
+        }
+
+        seat.addEventListener('click', () => {
+            if (!seat.classList.contains('booked')) {
+                seat.classList.toggle('selected');
+                if (seat.classList.contains('selected')) {
+                    selectedSeats++;
+                } else {
+                    selectedSeats--;
+                }
+                updateSummary();
+            }
+        });
+
+        seatContainer.appendChild(seat);
+    }
+}
+
+function updateSummary() {
+    seatCount.innerText = selectedSeats;
+    totalPrice.innerText = selectedSeats * ticketPrice;
+}
+
+function confirmBooking() {
+    if (selectedSeats === 0) {
+        alert("Please select at least one seat.");
+    } else {
+        alert("Booking Confirmed!\nSeats: " + selectedSeats + "\nTotal: ₹" + (selectedSeats * ticketPrice));
+        generateSeats();
+    }
+}
+</script>
+
+</body>
+</html>
